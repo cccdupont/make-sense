@@ -25,11 +25,13 @@ export type COCOAnnotation = {
     image_id: number;
     area: number;
     bbox: COCOBBox;
+    attributeNames?: string[];
 }
 
 export type COCOObject = {
     info: COCOInfo,
     images: COCOImage[],
     annotations: COCOAnnotation[],
-    categories: COCOCategory[]
+    categories: COCOCategory[],
+    attributeNames?: string[]
 }

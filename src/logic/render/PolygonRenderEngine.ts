@@ -220,7 +220,10 @@ export class PolygonRenderEngine extends BaseRenderEngine {
         const activeLabelId: string = LabelsSelector.getActiveLabelId();
         const highlightedLabelId: string = LabelsSelector.getHighlightedLabelId();
         const imageData: ImageData = LabelsSelector.getActiveImageData();
-        imageData.labelPolygons.forEach((labelPolygon: LabelPolygon) => {
+        // Only display non hidden labels
+        const hiddenIds = LabelsSelector.getLabelNames().filter((l) => l.hidden === true).map((l) => l.id);
+        const polygons = imageData.labelPolygons.filter((l) => !hiddenIds.includes(l.labelId));
+        polygons.forEach((labelPolygon: LabelPolygon) => {
             const isActive: boolean = labelPolygon.id === activeLabelId || labelPolygon.id === highlightedLabelId;
             const pathOnCanvas: IPoint[] = RenderEngineUtil.transferPolygonFromImageToViewPortContent(labelPolygon.vertices, data);
             if (!(labelPolygon.id === activeLabelId && this.isResizeInProgress())) {

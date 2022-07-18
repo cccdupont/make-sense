@@ -5,6 +5,7 @@ import { AppState } from "../../store";
 import { connect } from "react-redux";
 import LoadLabelsPopup from "./LoadLabelNamesPopup/LoadLabelNamesPopup";
 import InsertLabelNamesPopup from "./InsertLabelNamesPopup/InsertLabelNamesPopup";
+import InsertAttributeNamesPopup from "./InsertAttributeNamesPopup/InsertAttributeNamesPopup";
 import ExitProjectPopup from "./ExitProjectPopup/ExitProjectPopup";
 import LoadMoreImagesPopup from "./LoadMoreImagesPopup/LoadMoreImagesPopup";
 import { LoadModelPopup } from "./LoadModelPopup/LoadModelPopup";
@@ -34,6 +35,14 @@ const PopupView: React.FC<IProps> = ({ activePopupType }) => {
                 />;
             case PopupWindowType.UPDATE_LABEL:
                 return <InsertLabelNamesPopup
+                    isUpdate={true}
+                />;
+            case PopupWindowType.INSERT_ATTRIBUTE_NAMES:
+                return <InsertAttributeNamesPopup
+                    isUpdate={false}
+                />;
+            case PopupWindowType.UPDATE_ATTRIBUTE:
+                return <InsertAttributeNamesPopup
                     isUpdate={true}
                 />;
             case PopupWindowType.EXIT_PROJECT:

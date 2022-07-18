@@ -12,7 +12,7 @@
     transition: left 0.3s ease-in-out;
 
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: center;
@@ -22,6 +22,18 @@
       width: 5px;
       height: calc(100% - 4px);
       background-color: $darkThemeThirdColor;
+    }
+
+    .Row1 {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .Row2 {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      width: 80%;
     }
 
     .Content {
@@ -167,5 +179,38 @@
       background-color: $secondaryColor; // fallback if new css variables are not supported by browser
       background-color: var(--leading-color);
     }
+  }
+}
+
+.TagLabelsListContent {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: flex-start;
+  flex: 1 1 auto;
+}
+
+.TagItem {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.2);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  color: white;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  &.active {
+    background-color: $secondaryColor; // fallback if new css variables are not supported by browser
+    background-color: var(--leading-color);
   }
 }

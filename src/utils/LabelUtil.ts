@@ -31,7 +31,8 @@ export class LabelUtil {
         return {
             id: uuidv4(),
             labelId,
-            vertices
+            vertices,
+            attributeNames: []
         }
     }
 

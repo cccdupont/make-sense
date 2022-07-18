@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import { v4 as uuidv4 } from 'uuid';
 import './ImportLabelPopup.scss'
 import {LabelType} from '../../../data/enums/LabelType';
 import {PopupActions} from '../../../logic/actions/PopupActions';
@@ -10,7 +11,7 @@ import {connect} from 'react-redux';
 import {useDropzone} from 'react-dropzone';
 import {AcceptedFileType} from '../../../data/enums/AcceptedFileType';
 import {ImageData, LabelName} from '../../../store/labels/types';
-import {updateActiveLabelType, updateImageData, updateLabelNames} from '../../../store/labels/actionCreators';
+import {updateActiveLabelType, updateAttributeNames, updateImageData, updateLabelNames} from '../../../store/labels/actionCreators';
 import {ImporterSpecData} from '../../../data/ImporterSpecData';
 import {AnnotationFormatType} from '../../../data/enums/AnnotationFormatType';
 import {ILabelFormatData} from '../../../interfaces/ILabelFormatData';
@@ -19,6 +20,7 @@ interface IProps {
     activeLabelType: LabelType,
     updateImageDataAction: (imageData: ImageData[]) => any,
     updateLabelNamesAction: (labels: LabelName[]) => any,
+    updateAttributeNamesAction: (labels: LabelName[]) => any,
     updateActiveLabelTypeAction: (activeLabelType: LabelType) => any
 }
 
@@ -27,6 +29,7 @@ const ImportLabelPopup: React.FC<IProps> = (
         activeLabelType,
         updateImageDataAction,
         updateLabelNamesAction,
+        updateAttributeNamesAction,
         updateActiveLabelTypeAction
     }) => {
     const resolveFormatType = (labelType: LabelType): AnnotationFormatType => {
@@ -38,6 +41,7 @@ const ImportLabelPopup: React.FC<IProps> = (
     const [formatType, setFormatType] = useState(resolveFormatType(activeLabelType));
     const [loadedLabelNames, setLoadedLabelNames] = useState([]);
     const [loadedImageData, setLoadedImageData] = useState([]);
+    const [loadedAttributeNames, setLoadedAttributeNames] = useState([]);
     const [annotationsLoadedError, setAnnotationsLoadedError] = useState(null);
 
     const {getRootProps, getInputProps} = useDropzone({
@@ -57,10 +61,11 @@ const ImportLabelPopup: React.FC<IProps> = (
         setAnnotationsLoadedError(null);
     }
 
-    const onAnnotationLoadSuccess = (imagesData: ImageData[], labelNames: LabelName[]) => {
+    const onAnnotationLoadSuccess = (imagesData: ImageData[], labelNames: LabelName[], attributeNames: string[]) => {
         setLoadedLabelNames(labelNames);
         setLoadedImageData(imagesData);
         setAnnotationsLoadedError(null);
+        setLoadedAttributeNames(attributeNames);
     }
 
     const onAnnotationsLoadFailure = (error?:Error) => {
@@ -74,6 +79,7 @@ const ImportLabelPopup: React.FC<IProps> = (
             updateImageDataAction(loadedImageData);
             updateLabelNamesAction(loadedLabelNames);
             updateActiveLabelTypeAction(labelType);
+            updateAttributeNamesAction(loadedAttributeNames.map((c, idx) => ({id: uuidv4(), name: c, color: "#ffb21d"} as LabelName)));
             PopupActions.close();
         }
     };
@@ -186,6 +192,7 @@ const ImportLabelPopup: React.FC<IProps> = (
 const mapDispatchToProps = {
     updateImageDataAction: updateImageData,
     updateLabelNamesAction: updateLabelNames,
+    updateAttributeNamesAction: updateAttributeNames,
     updateActiveLabelTypeAction: updateActiveLabelType
 };
 

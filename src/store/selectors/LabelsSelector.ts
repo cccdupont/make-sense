@@ -21,6 +21,10 @@ export class LabelsSelector {
         return store.getState().labels.activeLabelType;
     }
 
+    public static getAttributeNames(): LabelName[] {
+        return store.getState().labels.attributes;
+    }
+
     public static getImagesData(): ImageData[] {
         return store.getState().labels.imagesData;
     }

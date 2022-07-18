@@ -28,6 +28,14 @@ export const DropDownMenuData: DropDownMenuNode[] = [
                 onClick: () => store.dispatch(updateActivePopupType(PopupWindowType.UPDATE_LABEL))
             },
             {
+                name: 'Edit Attributes',
+                description: 'Modify attributes list',
+                imageSrc: 'ico/tags.png',
+                imageAlt: 'attributes',
+                disabled: false,
+                onClick: () => store.dispatch(updateActivePopupType(PopupWindowType.UPDATE_ATTRIBUTE))
+            },
+            {
                 name: 'Import Images',
                 description: 'Load more images',
                 imageSrc: 'ico/camera.png',

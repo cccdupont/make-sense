@@ -21,13 +21,16 @@ interface IProps {
     isActive: boolean;
     isHighlighted: boolean;
     id: string;
-    value: LabelName;
-    options: LabelName[];
+    value: LabelName; // given label name
+    options: LabelName[]; // possible label names
+    attributeNames?: string[]; // given attribute names
+    attributeNamesOptions?: LabelName[]; // possible attribute names
     onDelete: (id: string) => any;
     onSelectLabel: (labelRectId: string, labelNameId: string) => any;
     updateHighlightedLabelId: (highlightedLabelId: string) => any;
     updateActiveLabelId: (highlightedLabelId: string) => any;
     updateActivePopupType: (activePopupType: PopupWindowType) => any;
+    onSelectTag?: (labelRectId: string, attributeNames: string[]) => any;
 }
 
 interface IState {
@@ -56,6 +59,16 @@ class LabelInputField extends React.Component<IProps, IState> {
         });
     }
 
+    private getTagClassName = (attributeName: string) => {
+        const selectedAttributeNames = this.props.attributeNames ? this.props.attributeNames : [];
+        return classNames(
+            "TagItem",
+            {
+                "active": selectedAttributeNames.includes(attributeName)
+            }
+        );
+    };
+
     private getClassName() {
         return classNames(
             "LabelInputField",
@@ -65,6 +78,16 @@ class LabelInputField extends React.Component<IProps, IState> {
                 "highlighted": this.props.isHighlighted
             }
         );
+    }
+
+    private onTagClick = (attributeName: string) => {
+        const newList = this.props.attributeNames.includes(attributeName) ? 
+            this.props.attributeNames.filter((c) => c !== attributeName) :
+            [...this.props.attributeNames, attributeName];
+        if (this.props.onSelectTag) { 
+            this.props.onSelectTag(this.props.id, newList);
+        }
+
     }
 
     private openDropdown = () => {
@@ -141,6 +164,20 @@ class LabelInputField extends React.Component<IProps, IState> {
         this.props.updateActiveLabelId(this.props.id);
     };
 
+    private getChildren = () => {
+        return [
+            ...this.props.attributeNamesOptions.map((labelName: LabelName) => {
+                return <div
+                    className={this.getTagClassName(labelName.name)}
+                    onClickCapture={() => this.onTagClick(labelName.name)}
+                    key={labelName.id}
+                >
+                    {labelName.name}
+                </div>
+            })
+        ]
+    };
+
     public render() {
         const {size, id, value, onDelete} = this.props;
         return(
@@ -162,38 +199,51 @@ class LabelInputField extends React.Component<IProps, IState> {
                         height: size.height,
                     }}
                 >
-                    <div className="Marker"/>
-                    <div className="Content">
-                        <div className="ContentWrapper">
-                            <div className="DropdownLabel"
-                                 ref={ref => this.dropdownLabel = ref}
-                                 onClick={this.openDropdown}
-                            >
-                                {value ? value.name : "Select label"}
-                            </div>
-                            {this.state.isOpen && <div
-                                className="Dropdown"
-                                style={this.getDropdownStyle()}
-                                ref={ref => this.dropdown = ref}
-                            >
-                                <Scrollbars
-                                    renderTrackHorizontal={props => <div {...props} className="track-horizontal"/>}
+                    <div className="Row1">
+                        <div className="Marker"/>
+                        <div className="Content">
+                            <div className="ContentWrapper">
+                                <div className="DropdownLabel"
+                                    ref={ref => this.dropdownLabel = ref}
+                                    onClick={this.openDropdown}
                                 >
-                                    <div>
-                                        {this.getDropdownOptions()}
-                                    </div>
-                                </Scrollbars>
+                                    {value ? value.name : "Select label"}
+                                </div>
+                                {this.state.isOpen && <div
+                                    className="Dropdown"
+                                    style={this.getDropdownStyle()}
+                                    ref={ref => this.dropdown = ref}
+                                >
+                                    <Scrollbars
+                                        renderTrackHorizontal={props => <div {...props} className="track-horizontal"/>}
+                                    >
+                                        <div>
+                                            {this.getDropdownOptions()}
+                                        </div>
+                                    </Scrollbars>
 
-                            </div>}
+                                </div>}
+                            </div>
+                            <div className="ContentWrapper">
+                                <ImageButton
+                                    externalClassName={"trash"}
+                                    image={"ico/trash.png"}
+                                    imageAlt={"remove_rect"}
+                                    buttonSize={{width: 30, height: 30}}
+                                    onClick={() => onDelete(id)}
+                                />
+                            </div>
                         </div>
-                        <div className="ContentWrapper">
-                            <ImageButton
-                                externalClassName={"trash"}
-                                image={"ico/trash.png"}
-                                imageAlt={"remove_rect"}
-                                buttonSize={{width: 30, height: 30}}
-                                onClick={() => onDelete(id)}
-                            />
+                    </div>
+                    <div className="Row2">
+                        <div
+                            className="TagLabelsListContent"
+                            style={{
+                                width: size.width,
+                            }}
+                            key="tag-labels-list-content"
+                        >
+                            {this.getChildren()}
                         </div>
                     </div>
                 </div>

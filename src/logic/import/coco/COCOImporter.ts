@@ -25,7 +25,7 @@ export class COCOImporter extends AnnotationImporter {
 
     public import(
         filesData: File[],
-        onSuccess: (imagesData: ImageData[], labelNames: LabelName[]) => any,
+        onSuccess: (imagesData: ImageData[], labelNames: LabelName[], attributeNames: string[]) => any,
         onFailure: (error?:Error) => any
     ): void {
         if (filesData.length > 1) {
@@ -38,8 +38,8 @@ export class COCOImporter extends AnnotationImporter {
             try {
                 const inputImagesData: ImageData[] = LabelsSelector.getImagesData();
                 const annotations = COCOImporter.deserialize(evt.target.result)
-                const {imagesData, labelNames} = this.applyLabels(inputImagesData, annotations);
-                onSuccess(imagesData,labelNames);
+                const {imagesData, labelNames, attributeNames} = this.applyLabels(inputImagesData, annotations);
+                onSuccess(imagesData,labelNames, attributeNames);
             } catch (error) {
                 onFailure(error as Error);
             }
@@ -57,7 +57,7 @@ export class COCOImporter extends AnnotationImporter {
 
     public applyLabels(imageData: ImageData[], annotationsObject: COCOObject): ImportResult {
         COCOImporter.validateCocoFormat(annotationsObject);
-        const {images, categories, annotations} = annotationsObject;
+        const {images, categories, annotations, attributeNames} = annotationsObject;
         const labelNameMap: LabelNameMap = COCOImporter.mapCOCOCategories(categories);
         const cleanImageData: ImageData[] = imageData.map((item: ImageData) => ImageDataUtil.cleanAnnotations(item));
         const imageDataPartition: PartitionResult<ImageData> = COCOImporter.partitionImageData(cleanImageData, images);
@@ -77,9 +77,11 @@ export class COCOImporter extends AnnotationImporter {
             if (this.labelType.includes(LabelType.POLYGON)) {
                 const polygons = COCOUtils.segmentation2vertices(annotation.segmentation);
                 for (const polygon of polygons) {
-                    imageDataMap[annotation.image_id].labelPolygons.push(LabelUtil.createLabelPolygon(
+                    const newPolygon = LabelUtil.createLabelPolygon(
                         labelNameMap[annotation.category_id].id, polygon
-                    ))
+                    )
+                    newPolygon.attributeNames = annotation.attributeNames || [];
+                    imageDataMap[annotation.image_id].labelPolygons.push(newPolygon);
                 }
             }
         }
@@ -88,7 +90,8 @@ export class COCOImporter extends AnnotationImporter {
 
         return {
             imagesData: ImageDataUtil.arrange(resultImageData, imageData.map((item: ImageData) => item.id)),
-            labelNames: Object.values(labelNameMap)
+            labelNames: Object.values(labelNameMap),
+            attributeNames: attributeNames || []
         }
     }
 

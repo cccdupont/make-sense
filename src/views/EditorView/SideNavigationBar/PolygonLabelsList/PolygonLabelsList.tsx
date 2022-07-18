@@ -23,11 +23,12 @@ interface IProps {
     highlightedLabelId: string;
     updateActiveLabelNameId: (activeLabelId: string) => any;
     labelNames: LabelName[];
+    attributeNamesState: LabelName[];
     updateActiveLabelId: (activeLabelId: string) => any;
 }
 
-const PolygonLabelsList: React.FC<IProps> = ({size, imageData, updateImageDataById, labelNames, updateActiveLabelNameId, activeLabelId, highlightedLabelId, updateActiveLabelId}) => {
-    const labelInputFieldHeight = 40;
+const PolygonLabelsList: React.FC<IProps> = ({size, imageData, updateImageDataById, labelNames, attributeNamesState, updateActiveLabelNameId, activeLabelId, highlightedLabelId, updateActiveLabelId}) => {
+    const labelInputFieldHeight = 100;
     const listStyle: React.CSSProperties = {
         width: size.width,
         height: size.height
@@ -58,6 +59,22 @@ const PolygonLabelsList: React.FC<IProps> = ({size, imageData, updateImageDataBy
         updateActiveLabelNameId(labelNameId);
     };
 
+    const updatePolygonAttributeNames = (labelPolygonId: string, attributeNames: string[]) => {
+        const newImageData = {
+            ...imageData,
+            labelPolygons: imageData.labelPolygons.map((currentLabel: LabelPolygon) => {
+                if (currentLabel.id === labelPolygonId) {
+                    return {
+                        ...currentLabel,
+                        attributeNames: attributeNames
+                    }
+                }
+                return currentLabel
+            })
+        };
+        updateImageDataById(imageData.id, newImageData);
+    };
+
     const onClickHandler = () => {
         updateActiveLabelId(null);
     };
@@ -73,10 +90,13 @@ const PolygonLabelsList: React.FC<IProps> = ({size, imageData, updateImageDataBy
                 isHighlighted={labelPolygon.id === highlightedLabelId}
                 id={labelPolygon.id}
                 key={labelPolygon.id}
+                attributeNames={labelPolygon.attributeNames}
+                attributeNamesOptions={attributeNamesState}
                 onDelete={deletePolygonLabelById}
                 value={labelPolygon.labelId !== null ? findLast(labelNames, {id: labelPolygon.labelId}) : null}
                 options={labelNames}
                 onSelectLabel={updatePolygonLabel}
+                onSelectTag={updatePolygonAttributeNames}
             />
         });
     };
@@ -114,7 +134,8 @@ const mapDispatchToProps = {
 const mapStateToProps = (state: AppState) => ({
     activeLabelId: state.labels.activeLabelId,
     highlightedLabelId: state.labels.highlightedLabelId,
-    labelNames : state.labels.labels
+    labelNames : state.labels.labels,
+    attributeNamesState : state.labels.attributes
 });
 
 export default connect(

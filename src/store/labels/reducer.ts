@@ -9,7 +9,8 @@ const initialState: LabelsState = {
     highlightedLabelId: null,
     imagesData: [],
     firstLabelCreatedFlag: false,
-    labels: []
+    labels: [],
+    attributes: []
 };
 
 export function labelsReducer(
@@ -71,6 +72,12 @@ export function labelsReducer(
             return {
                 ...state,
                 labels: action.payload.labels
+            }
+        }
+        case Action.UPDATE_ATTRIBUTE_NAMES: {
+            return {
+                ...state,
+                attributes: action.payload.attributes
             }
         }
         case Action.UPDATE_FIRST_LABEL_CREATED_FLAG: {

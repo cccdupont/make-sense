@@ -21,7 +21,8 @@ export class COCOExporter {
         const imagesData: ImageData[] = LabelsSelector.getImagesData();
         const labelNames: LabelName[] = LabelsSelector.getLabelNames();
         const projectName: string = GeneralSelector.getProjectName();
-        const COCOObject: COCOObject = COCOExporter.mapImagesDataToCOCOObject(imagesData, labelNames, projectName);
+        const attributeNames: string[] = LabelsSelector.getAttributeNames().map((c) => c.name);
+        const COCOObject: COCOObject = COCOExporter.mapImagesDataToCOCOObject(imagesData, labelNames, projectName, attributeNames);
         const content: string = JSON.stringify(COCOObject);
         const fileName: string = `${ExporterUtil.getExportFileName()}.json`;
         ExporterUtil.saveAs(content, fileName);
@@ -30,13 +31,15 @@ export class COCOExporter {
     private static mapImagesDataToCOCOObject(
         imagesData: ImageData[],
         labelNames: LabelName[],
-        projectName: string
+        projectName: string,
+        attributeNames?: string[]
     ): COCOObject {
         return {
             "info": COCOExporter.getInfoComponent(projectName),
             "images": COCOExporter.getImagesComponent(imagesData),
             "annotations": COCOExporter.getAnnotationsComponent(imagesData, labelNames),
-            "categories":COCOExporter.getCategoriesComponent(labelNames)
+            "categories": COCOExporter.getCategoriesComponent(labelNames),
+            "attributeNames": attributeNames
         }
     }
 
@@ -85,7 +88,8 @@ export class COCOExporter {
                         "category_id": labelsMap[labelPolygon.labelId],
                         "segmentation": COCOExporter.getCOCOSegmentation(labelPolygon.vertices),
                         "bbox": COCOExporter.getCOCOBbox(labelPolygon.vertices),
-                        "area": COCOExporter.getCOCOArea(labelPolygon.vertices)
+                        "area": COCOExporter.getCOCOArea(labelPolygon.vertices),
+                        "attributeNames": labelPolygon.attributeNames
                     }
                 })
             })

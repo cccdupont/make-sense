@@ -19,7 +19,7 @@ export class YOLOImporter extends AnnotationImporter {
 
     public import(
         filesData: File[],
-        onSuccess: (imagesData: ImageData[], labelNames: LabelName[]) => any,
+        onSuccess: (imagesData: ImageData[], labelNames: LabelName[], attributeNames?: string[]) => any,
         onFailure: (error?:Error) => any
     ): void {
         try {

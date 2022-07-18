@@ -33,6 +33,7 @@ export type LabelPolygon = {
     id: string;
     labelId: string;
     vertices: IPoint[];
+    attributeNames?: string[];
 }
 
 export type LabelLine = {
@@ -45,6 +46,7 @@ export type LabelName = {
     name: string;
     id: string;
     color: string;
+    hidden?: boolean; // default false
 }
 
 export type ImageData = {
@@ -73,6 +75,7 @@ export type LabelsState = {
     imagesData: ImageData[];
     firstLabelCreatedFlag: boolean;
     labels: LabelName[];
+    attributes?: LabelName[];
 }
 
 interface UpdateActiveImageIndex {
@@ -139,6 +142,13 @@ interface UpdateLabelNames {
     }
 }
 
+interface UpdateAttributeNames {
+    type: typeof Action.UPDATE_ATTRIBUTE_NAMES;
+    payload: {
+        attributes: LabelName[];
+    }
+}
+
 interface UpdateFirstLabelCreatedFlag {
     type: typeof Action.UPDATE_FIRST_LABEL_CREATED_FLAG;
     payload: {
@@ -156,4 +166,5 @@ export type LabelsActionTypes = UpdateActiveImageIndex
     | UpdateActiveLabelId
     | UpdateHighlightedLabelId
     | UpdateFirstLabelCreatedFlag
+    | UpdateAttributeNames
 
