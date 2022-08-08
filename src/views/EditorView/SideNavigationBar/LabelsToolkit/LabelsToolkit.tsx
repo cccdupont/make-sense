@@ -14,8 +14,8 @@ import {Settings} from "../../../../settings/Settings";
 import RectLabelsList from "../RectLabelsList/RectLabelsList";
 import PointLabelsList from "../PointLabelsList/PointLabelsList";
 import PolygonLabelsList from "../PolygonLabelsList/PolygonLabelsList";
-// import {ContextManager} from "../../../../logic/context/ContextManager";
-// import {ContextType} from "../../../../data/enums/ContextType";
+import {ContextManager} from "../../../../logic/context/ContextManager";
+import {ContextType} from "../../../../data/enums/ContextType";
 import {EventType} from "../../../../data/enums/EventType";
 import LineLabelsList from "../LineLabelsList/LineLabelsList";
 import TagLabelsList from "../TagLabelsList/TagLabelsList";
@@ -177,12 +177,11 @@ class LabelsToolkit extends React.Component<IProps, IState> {
     };
 
     public render() {
-        // onClick={() => ContextManager.switchCtx(ContextType.RIGHT_NAVBAR)}
         return(
             <div
                 className="LabelsToolkit"
                 ref={ref => this.labelsToolkitRef = ref}
-                onClick={() => console.log('Ignored context switching.')}
+                onClick={() => ContextManager.switchCtx(ContextType.RIGHT_NAVBAR)}
             >
                 {this.state.size && this.renderChildren()}
             </div>
