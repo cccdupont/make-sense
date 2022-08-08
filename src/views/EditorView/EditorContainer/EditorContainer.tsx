@@ -76,10 +76,12 @@ const EditorContainer: React.FC<IProps> = (
     };
 
     const rightSideBarButtonOnClick = () => {
-        if (!rightTabStatus)
+        if (!rightTabStatus) {
             ContextManager.switchCtx(ContextType.RIGHT_NAVBAR);
-        else if (rightTabStatus && activeContext === ContextType.RIGHT_NAVBAR)
+        }
+        else if (rightTabStatus && activeContext === ContextType.RIGHT_NAVBAR) {
             ContextManager.restoreCtx();
+        }
 
         setRightTabStatus(!rightTabStatus);
     };

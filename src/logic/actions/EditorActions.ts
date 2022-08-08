@@ -143,4 +143,16 @@ export class EditorActions {
             EditorModel.mousePositionIndicator.style.display = "none";
         }
     };
+
+    public static runCopy() {
+        if (EditorModel.supportRenderingEngine instanceof PolygonRenderEngine) {
+            EditorModel.supportRenderingEngine.copyToClipboard();
+        }
+    }
+
+    public static runPaste() {
+        if (EditorModel.supportRenderingEngine instanceof PolygonRenderEngine) {
+            EditorModel.supportRenderingEngine.pasteFromClipboard();
+        }
+    }
 }

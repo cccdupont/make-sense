@@ -93,6 +93,20 @@ export class EditorContext extends BaseContext {
             }
         },
         {
+            keyCombo: PlatformUtil.isMac(window.navigator.userAgent) ? ["Ctrl", "c"] : ["Control", "c"],
+            action: (event: KeyboardEvent) => {
+                event.preventDefault();
+                EditorActions.runCopy();
+            }
+        },
+        {
+            keyCombo: PlatformUtil.isMac(window.navigator.userAgent) ? ["Ctrl", "v"] : ["Control", "v"],
+            action: (event: KeyboardEvent) => {
+                event.preventDefault();
+                EditorActions.runPaste();
+            }
+        },
+        {
             keyCombo: PlatformUtil.isMac(window.navigator.userAgent) ? ["Backspace"] : ["Delete"],
             action: (event: KeyboardEvent) => {
                 LabelActions.deleteActiveLabel();

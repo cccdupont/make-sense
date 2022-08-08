@@ -5,7 +5,6 @@
   height: $editorBottomNavigationBarHeight;
   border-top: solid 1px $darkThemeFirstColor;
   background-color: $darkThemeSecondColor;
-  user-select: none;
 
   display: flex;
   flex-direction: row;
@@ -16,6 +15,11 @@
 
   &.with-context {
     background-color: $darkThemeForthColor;
+  }
+
+  ::selection {
+    color: $darkThemeSecondColor;
+    background: white;
   }
 
   .ImageButton {

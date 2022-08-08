@@ -65,6 +65,30 @@ export class PolygonRenderEngine extends BaseRenderEngine {
         }
     }
 
+    public copyToClipboard(): void {
+        const activePolygon = LabelsSelector.getActivePolygonLabel();
+        navigator.clipboard.writeText(JSON.stringify(activePolygon)).then(() => {
+        }, () => {
+            console.warn('Copying failed.')
+        });
+    }
+
+    public pasteFromClipboard(): void {
+        try {
+            navigator.clipboard.readText()
+            .then((copiedText) => {
+                const polygon = JSON.parse(copiedText);
+                if (polygon) {
+                    const vertices = polygon.vertices as IPoint[];
+                    this.addPolygonLabel(vertices);
+                }
+            });
+        } catch {
+            console.warn("Pasting failed.")
+        }
+    }
+    
+
     public mouseDownHandler(data: EditorData): void {
         const isMouseOverCanvas: boolean = RenderEngineUtil.isMouseOverCanvas(data);
         if (isMouseOverCanvas) {
@@ -274,7 +298,6 @@ export class PolygonRenderEngine extends BaseRenderEngine {
             if (isMouseOverImage) {
                 EditorActions.setViewPortActionsDisabledStatus(true);
                 this.activePath.push(data.mousePositionOnViewPortContent);
-                store.dispatch(updateActiveLabelId(null));
             }
         }
     }
@@ -301,6 +324,12 @@ export class PolygonRenderEngine extends BaseRenderEngine {
         const activeLabelId = LabelsSelector.getActiveLabelNameId();
         const imageData: ImageData = LabelsSelector.getActiveImageData();
         const labelPolygon: LabelPolygon = LabelUtil.createLabelPolygon(activeLabelId, polygon);
+        // ======================================
+        // Retrieve default attribute names
+        const activePolygon = LabelsSelector.getActivePolygonLabel();
+        labelPolygon.attributeNames = activePolygon?.attributeNames || [];
+        store.dispatch(updateActiveLabelId(null));
+        // ======================================
         imageData.labelPolygons.push(labelPolygon);
         store.dispatch(updateImageDataById(imageData.id, imageData));
         store.dispatch(updateFirstLabelCreatedFlag(true));

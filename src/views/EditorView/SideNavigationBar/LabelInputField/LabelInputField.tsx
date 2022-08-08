@@ -165,8 +165,10 @@ class LabelInputField extends React.Component<IProps, IState> {
     };
 
     private getChildren = () => {
+        //  attributes are only supported for polygons
+        const props = this.props.attributeNamesOptions || [];
         return [
-            ...this.props.attributeNamesOptions.map((labelName: LabelName) => {
+            ...props.map((labelName: LabelName) => {
                 return <div
                     className={this.getTagClassName(labelName.name)}
                     onClickCapture={() => this.onTagClick(labelName.name)}
