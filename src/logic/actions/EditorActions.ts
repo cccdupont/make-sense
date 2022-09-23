@@ -145,14 +145,14 @@ export class EditorActions {
     };
 
     public static runCopy() {
-        if (EditorModel.supportRenderingEngine instanceof PolygonRenderEngine) {
-            EditorModel.supportRenderingEngine.copyToClipboard();
-        }
+        // if (EditorModel.supportRenderingEngine instanceof PolygonRenderEngine) {
+        //     EditorModel.supportRenderingEngine.copyToClipboard();
+        // }
     }
 
     public static runPaste() {
-        if (EditorModel.supportRenderingEngine instanceof PolygonRenderEngine) {
-            EditorModel.supportRenderingEngine.pasteFromClipboard();
-        }
+        // if (EditorModel.supportRenderingEngine instanceof PolygonRenderEngine) {
+        //     EditorModel.supportRenderingEngine.pasteFromClipboard();
+        // }
     }
 }
